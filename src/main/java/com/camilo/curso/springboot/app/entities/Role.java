@@ -13,31 +13,31 @@ public class Role {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer idRole;
+	private Integer idRol;
 	
 	@Column(unique = true)
-	private String nameRole;
+	private String nameRol;
 
-	public Role(String nameRole) {
-		this.nameRole = nameRole;
+	public Role(String nameRol) {
+		this.nameRol = nameRol;
 	}
 
 	public Role() {
 	}
 
 	public Integer getIdRole() {
-		return idRole;
+		return idRol;
 	}
 
 	public void setIdRole(Integer idRole) {
-		this.idRole = idRole;
+		this.idRol = idRole;
 	}
 
-	public String getNameRole() {
-		return nameRole;
+	public String getnameRol() {
+		return nameRol;
 	}
 
-	public void setNameRole(String nameRole) {
-		this.nameRole = nameRole;
+	public void setnameRol(String nameRol) {
+		this.nameRol = nameRol;
 	}
 }

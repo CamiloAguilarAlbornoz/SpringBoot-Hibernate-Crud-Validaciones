@@ -35,20 +35,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public User save(User user) {
-		Optional<Role> optionalRole = roleRepository.findByName("ROLE_USER");
+		Optional<Role> optionalRole = roleRepository.findByNameRol("ROLE_USER");
 		List<Role> rolesList = new ArrayList<>();
 		optionalRole.ifPresent(role -> rolesList.add(role));
 		if (user.isAdmin()) {
-			Optional<Role> optionalRoleAdmin = roleRepository.findByName("ROLE_ADMIN");
+			Optional<Role> optionalRoleAdmin = roleRepository.findByNameRol("ROLE_ADMIN");
 			optionalRoleAdmin.ifPresent(role -> rolesList.add(role));
 		}
 		user.setRolesList(rolesList);
-		user.setPassword(encoderPassword(user.getPassword()));
+		passwordEncoder.encode(user.getPassword());
 		return userRepository.save(user);
-	}
-
-	private String encoderPassword(String password) {
-		return passwordEncoder.encode(password);
 	}
 
 }
