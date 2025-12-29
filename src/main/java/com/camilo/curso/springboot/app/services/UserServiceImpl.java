@@ -43,8 +43,13 @@ public class UserServiceImpl implements UserService {
 			optionalRoleAdmin.ifPresent(role -> rolesList.add(role));
 		}
 		user.setRolesList(rolesList);
-		passwordEncoder.encode(user.getPassword());
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		return userRepository.save(user);
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public boolean existsByUserName(String userName) {
+		return userRepository.existsByUserName(userName);
+	}
 }

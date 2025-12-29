@@ -1,6 +1,11 @@
 package com.camilo.curso.springboot.app.entities;
 
 import java.util.List;
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
@@ -30,8 +36,14 @@ public class User {
 	private String userName;
 	
 	@NotBlank
+	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
 	
+	@JsonIgnoreProperties({
+		"usersList",
+		"handler",
+		"hibernateLazyInitializer"
+	})
 	@ManyToMany
 	@JoinTable(
 		name = "users_roles",
@@ -48,6 +60,10 @@ public class User {
 	private List<Role> rolesList;
 	
 	private boolean enabled;
+
+	@Transient
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private boolean isAdmin;
 	
 	public boolean isEnabled() {
 		return enabled;
@@ -56,9 +72,6 @@ public class User {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-
-	@Transient
-	private boolean isAdmin;
 
 	public boolean isAdmin() {
 		return isAdmin;
@@ -98,5 +111,27 @@ public class User {
 
 	public void setRolesList(List<Role> rolesList) {
 		this.rolesList = rolesList;
+	}
+	
+	@PrePersist
+	public void PrePersist() {
+		this.enabled = true;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(idUser, userName);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return Objects.equals(idUser, other.idUser) && Objects.equals(userName, other.userName);
 	}
 }
